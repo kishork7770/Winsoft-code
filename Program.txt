@@ -1,0 +1,131 @@
+using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string connectionString = "Data Source=(local);Initial Catalog=MyDatabase;Integrated Security=True";
+
+       
+        CreateDatabaseAndTable(connectionString);
+
+        InsertData(connectionString);
+        ReadData(connectionString);
+        UpdateData(connectionString);
+        DeleteData(connectionString);
+
+        ShowAllData(connectionString);
+    }
+
+    static void CreateDatabaseAndTable(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            
+            string createDatabaseQuery = "CREATE DATABASE IF NOT EXISTS MyDatabase";
+            using (SqlCommand command = new SqlCommand(createDatabaseQuery, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+
+            connection.ChangeDatabase("MyDatabase");
+
+            string createTableQuery = "CREATE TABLE IF NOT EXISTS Employee (Id INT PRIMARY KEY, Name NVARCHAR(50), Age INT)";
+            using (SqlCommand command = new SqlCommand(createTableQuery, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    static void InsertData(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string insertQuery = "INSERT INTO Employee (Id, Name, Age) VALUES (1, 'John Doe', 25)";
+            using (SqlCommand command = new SqlCommand(insertQuery, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    static void ReadData(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string selectQuery = "SELECT * FROM Employee";
+            using (SqlCommand command = new SqlCommand(selectQuery, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    Console.WriteLine("All data from the Employee table:");
+
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"Id: {reader["Id"]}, Name: {reader["Name"]}, Age: {reader["Age"]}");
+                    }
+                }
+            }
+        }
+    }
+
+    static void UpdateData(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string updateQuery = "UPDATE Employee SET Age = 30 WHERE Id = 1";
+            using (SqlCommand command = new SqlCommand(updateQuery, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    static void DeleteData(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+       
+            string deleteQuery = "DELETE FROM Employee WHERE Id = 1";
+            using (SqlCommand command = new SqlCommand(deleteQuery, connection))
+            {
+                command.ExecuteNonQuery();
+            }
+        }
+    }
+
+    static void ShowAllData(string connectionString)
+    {
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            string selectQuery = "SELECT * FROM Employee";
+            using (SqlCommand command = new SqlCommand(selectQuery, connection))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    Console.WriteLine("All data from the Employee table:");
+
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"Id: {reader["Id"]}, Name: {reader["Name"]}, Age: {reader["Age"]}");
+                    }
+                }
+            }
+        }
+    }
+}
+
